@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
@@ -11,7 +11,11 @@
         <h1>Онлайн результати матчів Англійської Прем'єр-ліги 2024-25</h1>
     </header>
     <main>
-        <section id="results">
+        <div class="tabs">
+            <button id="matches-tab" class="tab-button active">Матчі</button>
+            <button id="standings-tab" class="tab-button">Турнірна таблиця</button>
+        </div>
+        <section id="results" class="tab-content active">
             <h2>Результати</h2>
             <table>
                 <thead>
@@ -26,7 +30,7 @@
                 </tbody>
             </table>
         </section>
-        <section id="standings">
+        <section id="standings" class="tab-content">
             <h2>Турнірна таблиця</h2>
             <table>
                 <thead>
@@ -46,9 +50,6 @@
             </table>
         </section>
     </main>
-    <footer>
-        <p>&copy;Результати матчів АПЛ 2024-25</p>
-    </footer>
     <script src="script.js"></script>
 </body>
 </html>
