@@ -12,13 +12,11 @@ async function fetchResults() {
         }
         const data = await response.json();
 
-       
         const todayString = today.toISOString().split('T')[0];
         const tomorrowString = tomorrow.toISOString().split('T')[0];
 
-       
         const matchesToDisplay = data.matches.filter(match => {
-            const matchDate = match.utcDate.split('T')[0]; 
+            const matchDate = match.utcDate.split('T')[0];
             return matchDate === todayString || matchDate === tomorrowString;
         });
 
@@ -34,6 +32,15 @@ function displayResults(matches) {
 
     matches.forEach(match => {
         const row = document.createElement('tr');
+        let rowClass = '';
+
+        if (match.status === 'FINISHED') {
+            rowClass = match.score.fullTime.home > match.score.fullTime.away ? 'home-win' : match.score.fullTime.home < match.score.fullTime.away ? 'away-win' : 'draw';
+        } else if (match.status === 'LIVE') {
+            rowClass = 'live';
+        }
+
+        row.classList.add(rowClass);
 
         const homeTeamCell = document.createElement('td');
         homeTeamCell.textContent = match.homeTeam.name;
@@ -45,7 +52,7 @@ function displayResults(matches) {
         visitorTeamCell.textContent = match.awayTeam.name;
 
         const statusCell = document.createElement('td');
-        statusCell.textContent = match.status;
+        statusCell.textContent = `${match.status} (${getMatchMinute(match.utcDate)})`;
 
         row.appendChild(homeTeamCell);
         row.appendChild(scoreCell);
@@ -54,6 +61,17 @@ function displayResults(matches) {
 
         resultsBody.appendChild(row);
     });
+}
+
+function getMatchMinute(utcDate) {
+    const matchDate = new Date(utcDate);
+    const now = new Date();
+    const diffInMs = now - matchDate;
+    const diffInMinutes = Math.floor(diffInMs / 60000);
+
+    if (diffInMinutes < 0) return 'Match not started';
+    if (diffInMinutes >= 90) return 'Full time';
+    return `${diffInMinutes} хв`;
 }
 
 async function fetchStandings() {
@@ -117,8 +135,35 @@ function displayStandings(standings) {
     });
 }
 
-
 window.addEventListener('load', () => {
     fetchResults();
     fetchStandings();
+
+    // Tab switching functionality
+    document.getElementById('matches-tab').addEventListener('click', () => {
+        showTab('results');
+    });
+
+    document.getElementById('standings-tab').addEventListener('click', () => {
+        showTab('standings');
+    });
 });
+
+function showTab(tabId) {
+    const resultsTab = document.getElementById('results');
+    const standingsTab = document.getElementById('standings');
+    const matchesTabButton = document.getElementById('matches-tab');
+    const standingsTabButton = document.getElementById('standings-tab');
+
+    if (tabId === 'results') {
+        resultsTab.classList.add('active');
+        standingsTab.classList.remove('active');
+        matchesTabButton.classList.add('active');
+        standingsTabButton.classList.remove('active');
+    } else {
+        standingsTab.classList.add('active');
+        resultsTab.classList.remove('active');
+        matchesTabButton.classList.remove('active');
+        standingsTabButton.classList.add('active');
+    }
+}
