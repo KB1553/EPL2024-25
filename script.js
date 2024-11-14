@@ -43,13 +43,21 @@ function displayResults(matches) {
         row.classList.add(rowClass);
 
         const homeTeamCell = document.createElement('td');
-        homeTeamCell.textContent = match.homeTeam.name;
+        homeTeamCell.classList.add('team-name');
+        homeTeamCell.innerHTML = `
+            <img src="${match.homeTeam.crest}" alt="${match.homeTeam.name}" class="team-logo">
+            ${match.homeTeam.name}
+        `;
 
         const scoreCell = document.createElement('td');
         scoreCell.textContent = `${match.score.fullTime.home} - ${match.score.fullTime.away}`;
 
         const visitorTeamCell = document.createElement('td');
-        visitorTeamCell.textContent = match.awayTeam.name;
+        visitorTeamCell.classList.add('team-name');
+        visitorTeamCell.innerHTML = `
+            <img src="${match.awayTeam.crest}" alt="${match.awayTeam.name}" class="team-logo">
+            ${match.awayTeam.name}
+        `;
 
         const statusCell = document.createElement('td');
         statusCell.textContent = `${match.status} (${getMatchMinute(match.utcDate)})`;
@@ -102,7 +110,11 @@ function displayStandings(standings) {
         positionCell.textContent = index + 1;
 
         const teamCell = document.createElement('td');
-        teamCell.textContent = team.team.name;
+        teamCell.classList.add('team-name');
+        teamCell.innerHTML = `
+            <img src="${team.team.crest}" alt="${team.team.name}" class="team-logo">
+            ${team.team.name}
+        `;
 
         const playedGamesCell = document.createElement('td');
         playedGamesCell.textContent = team.playedGames;
@@ -139,7 +151,6 @@ window.addEventListener('load', () => {
     fetchResults();
     fetchStandings();
 
-    // Tab switching functionality
     document.getElementById('matches-tab').addEventListener('click', () => {
         showTab('results');
     });
@@ -163,7 +174,7 @@ function showTab(tabId) {
     } else {
         standingsTab.classList.add('active');
         resultsTab.classList.remove('active');
-        matchesTabButton.classList.remove('active');
         standingsTabButton.classList.add('active');
+        matchesTabButton.classList.remove('active');
     }
 }
